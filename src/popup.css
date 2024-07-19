@@ -1,0 +1,159 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  list-style: none;
+  text-decoration: none;
+}
+
+body {
+  width: 350px;
+  min-height: 400px;
+  background-image: linear-gradient(#000000, #000b12);
+  color: white;
+  font-family: 'Inter';
+}
+
+main {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding: 15px;
+  gap: 20px;
+}
+
+header {
+  padding-top: 45px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 4px;
+}
+
+header h2 {
+  line-height: 100%;
+  font-size: 25px;
+  font-weight: 900;
+}
+
+header p {
+  line-height: 100%;
+  line-height: 100%;
+  font-size: 12px;
+  opacity: 80%;
+  line-height: 100%;
+}
+
+hr {
+  width: 100%;
+  opacity: 0.4;
+}
+
+.bookmark_lists {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  width: 100%;
+  align-items: center;
+  max-height: 300px;
+  overflow-y: scroll;
+}
+
+::-webkit-scrollbar {
+  background-color: transparent;
+  width: 0px;
+}
+
+.bookmark_list-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px 11px;
+  border-radius: 8px;
+  background-color: #2d2d2d45;
+  cursor: default;
+  transition: 0.4s all ease;
+}
+
+.bookmark_list-wrapper:hover {
+  background-color: #2d2d2d81;
+}
+
+.bookmark_list-wrapper .left {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.bookmark_list-wrapper .left span {
+  font-weight: 500;
+  font-size: 11px;
+  opacity: 0.5;
+}
+
+.bookmark_list-wrapper .left p {
+  font-size: 20px;
+  font-weight: 900;
+}
+
+.bookmark_list-wrapper .right-controls {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.bookmark_list-wrapper button {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid white;
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 0.4s all ease;
+}
+
+.btn {
+  background-color: transparent;
+  border: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.btn img {
+  width: 80%;
+  height: auto;
+}
+
+.bookmark_list-wrapper button img {
+  width: 80%;
+  height: auto;
+  transition: 0.2s all ease;
+}
+
+.bookmark_list-wrapper button:hover img {
+  filter: invert(1);
+}
+
+.bookmark_list-wrapper button:hover {
+  background-color: white;
+}
+
+.bookmark_list-wrapper button:active img {
+  width: 80%;
+  height: auto;
+  scale: 0.8;
+}

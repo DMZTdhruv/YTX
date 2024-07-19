@@ -1,0 +1,47 @@
+{
+  "name": "YTX",
+  "version": "0.1.0",
+  "description": "An extension made to allow users to time stamp youtube videos, helping you to achieve more productivity",
+  "permissions": [
+    "storage",
+    "tabs"
+  ],
+  "host_permissions": [
+    "https://*.youtube.com/*"
+  ],
+  "background": {
+    "service_worker": "extension/background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.youtube.com/*"
+      ],
+      "js": [
+        "extension/content.js"
+      ]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "assets/play.png",
+        "assets/bin.png",
+        "assets/bookmark_button.png"
+      ],
+      "matches": [
+        "https://*.youtube.com/*"
+      ]
+    }
+  ],
+  "action": {
+    "default_icon": {
+      "16": "assets/ext-icon.png",
+      "24": "assets/ext-icon.png",
+      "32": "assets/ext-icon.png"
+    },
+    "default_title": "YTX",
+    "default_popup": "src/popup.html"
+  },
+  "manifest_version": 3
+}
