@@ -49,6 +49,25 @@ header p {
   line-height: 100%;
 }
 
+.search_box {
+  height: 32px;
+  width: 100%;
+  background-color: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.364);
+  caret-color: #9fdaff;
+  border-radius: 33px;
+  color: white;
+  font-weight: bolder;
+  padding: 5px 10px;
+  outline: none;
+  font-family: 'Inter';
+  transition: 0.4s all ease;
+}
+
+.search_box:focus {
+  border: 2px solid white;
+}
+
 hr {
   width: 100%;
   opacity: 0.4;

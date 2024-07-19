@@ -7,29 +7,25 @@ const getActiveTabURL = async () => {
   return tabs[0];
 };
 
-//important variables
+// Important variables
 const activeTab = await getActiveTabURL();
 const queryParameters = activeTab.url.split('?')[1];
 const urlParameters = new URLSearchParams(queryParameters);
 const videoId = urlParameters.get('v');
 
+let currentVideoBookmarks = []; // Global variable for bookmarks
+
 const initializeTheBookmarkElements = async () => {
-  const currentVideoBookmarks = await getCurrentVideoBookmarks();
+  currentVideoBookmarks = await getCurrentVideoBookmarks();
 
   const bookmarkList = document.querySelector('.bookmark_lists');
   bookmarkList.innerHTML = '';
 
-  //checking if any bookmark exits or not or else appending the new previous bookmarks to the list
+  // Check if any bookmark exists
   if (currentVideoBookmarks.length <= 0) {
     bookmarkList.innerHTML = '<p>No bookmark exists for this video</p>';
   } else {
-    currentVideoBookmarks.forEach((bookmark, index) => {
-      const { time, desc } = bookmark;
-      const listElement = bookmark?.name
-        ? createBookmarkElement(index + 1, time, desc, bookmark.name)
-        : createBookmarkElement(index + 1, time, desc);
-      bookmarkList.appendChild(listElement);
-    });
+    displayBookmarks(currentVideoBookmarks); // Call displayBookmarks
   }
 };
 
@@ -57,21 +53,20 @@ const updateChromeStorage = newBookmarks => {
 };
 
 const removeBookmark = async time => {
-  const currentBookMarks = await getCurrentVideoBookmarks();
-  const currentFilteredBookmarks = currentBookMarks.filter(
+  const filteredBookmarks = currentVideoBookmarks.filter(
     bookmark => bookmark.time !== time
   );
 
-  updateChromeStorage(currentFilteredBookmarks);
-  refreshBookmark(currentFilteredBookmarks);
+  currentVideoBookmarks = filteredBookmarks; // Update global variable
+  updateChromeStorage(currentVideoBookmarks);
+  refreshBookmark(currentVideoBookmarks);
 };
 
 const editBookmark = async time => {
-  const currentBookmarks = await getCurrentVideoBookmarks();
   const name = prompt('Enter the name for this bookmark');
-  alert('You entered this name for the bookmark ' + name);
+  alert('You entered this name for the bookmark: ' + name);
 
-  const updatedBookmarks = currentBookmarks.map(bookmark => {
+  const updatedBookmarks = currentVideoBookmarks.map(bookmark => {
     if (bookmark.time === time) {
       return { ...bookmark, name: name };
     }
@@ -79,21 +74,25 @@ const editBookmark = async time => {
     return bookmark;
   });
 
+  currentVideoBookmarks = updatedBookmarks; // Update global variable
   updateChromeStorage(updatedBookmarks);
-  refreshBookmark(updatedBookmarks);
+  refreshBookmark(currentVideoBookmarks);
 };
 
 const refreshBookmark = newBookmarks => {
+  displayBookmarks(newBookmarks); // Call displayBookmarks
+};
+
+const displayBookmarks = bookmarks => {
   const bookmarkList = document.querySelector('.bookmark_lists');
-  if (newBookmarks.length === 0) {
+  bookmarkList.innerHTML = '';
+
+  if (bookmarks.length === 0) {
     bookmarkList.innerHTML = '<p>No bookmark exists for this video</p>';
   } else {
-    bookmarkList.innerHTML = '';
-    newBookmarks.forEach((bookmark, index) => {
-      const { time, desc } = bookmark;
-      const listElement = bookmark?.name
-        ? createBookmarkElement(index + 1, time, desc, bookmark.name)
-        : createBookmarkElement(index + 1, time, desc);
+    bookmarks.forEach((bookmark, index) => {
+      const { time, desc, name } = bookmark;
+      const listElement = createBookmarkElement(index + 1, time, desc, name);
       bookmarkList.appendChild(listElement);
     });
   }
@@ -183,6 +182,20 @@ const createBookmarkElement = (index, time, description, name) => {
 const main = async () => {
   if (activeTab.url.includes('youtube.com/watch') && videoId) {
     await initializeTheBookmarkElements();
+
+    const searchBox = document.querySelector('.search_box');
+    searchBox.addEventListener('input', e => {
+      const searchValue = e.target.value.toLowerCase(); // Lowercase for case-insensitive search
+      if (searchValue === '') {
+        refreshBookmark(currentVideoBookmarks);
+        return;
+      }
+
+      const filteredBookmarks = currentVideoBookmarks.filter(
+        bookmark => bookmark.name && bookmark.name.toLowerCase().includes(searchValue)
+      );
+      refreshBookmark(filteredBookmarks);
+    });
   }
 };
 
