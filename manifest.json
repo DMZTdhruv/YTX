@@ -27,7 +27,8 @@
       "resources": [
         "assets/play.png",
         "assets/bin.png",
-        "assets/bookmark_button.png"
+        "assets/bookmark_button.png",
+        "assets/edit-icon.png"
       ],
       "matches": [
         "https://*.youtube.com/*"

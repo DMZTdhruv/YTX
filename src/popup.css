@@ -121,7 +121,7 @@ hr {
   transition: 0.4s all ease;
 }
 
-.bookmark_list-wrapper:hover .bookmark_information_wrapper .bookmark_information {
+.bookmark_information_wrapper:hover .bookmark_information {
   transform: translateY(-50%);
 }
 

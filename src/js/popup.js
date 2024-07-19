@@ -146,7 +146,7 @@ const createBookmarkElement = (index, time, description, name) => {
   editButton.title = 'Edit this bookmark';
   editButton.className = 'edit-btn';
   const editIcon = document.createElement('img');
-  editIcon.src = chrome.runtime.getURL('/assets/play.png');
+  editIcon.src = chrome.runtime.getURL('/assets/edit-icon.png');
   editButton.appendChild(editIcon);
   rightControlsDiv.appendChild(editButton);
 
