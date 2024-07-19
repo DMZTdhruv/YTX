@@ -97,9 +97,32 @@ hr {
   opacity: 0.5;
 }
 
-.bookmark_list-wrapper .left p {
+.bookmark_information_wrapper {
+  height: 24px;
+  overflow: hidden;
+}
+
+.bookmark_information {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  transition: 0.4s all ease;
+}
+
+.bookmark_information .bookmark_title {
   font-size: 20px;
   font-weight: 900;
+  transition: 0.4s all ease;
+}
+
+.bookmark_information .bookmark_time {
+  font-size: 20px;
+  font-weight: 900;
+  transition: 0.4s all ease;
+}
+
+.bookmark_list-wrapper:hover .bookmark_information_wrapper .bookmark_information {
+  transform: translateY(-50%);
 }
 
 .bookmark_list-wrapper .right-controls {

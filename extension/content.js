@@ -54,6 +54,7 @@ const addBookmark = async () => {
 
     const newBookmark = {
       time: currentPlayerTime,
+      name: '',
       desc: getTimeInIsoString(currentPlayerTime),
     };
 

@@ -15,6 +15,7 @@ const videoId = urlParameters.get('v');
 
 const initializeTheBookmarkElements = async () => {
   const currentVideoBookmarks = await getCurrentVideoBookmarks();
+
   const bookmarkList = document.querySelector('.bookmark_lists');
   bookmarkList.innerHTML = '';
 
@@ -22,8 +23,11 @@ const initializeTheBookmarkElements = async () => {
   if (currentVideoBookmarks.length <= 0) {
     bookmarkList.innerHTML = '<p>No bookmark exists for this video</p>';
   } else {
-    currentVideoBookmarks.forEach(({ time, desc }, index) => {
-      const listElement = createBookmarkElement(index + 1, time, desc);
+    currentVideoBookmarks.forEach((bookmark, index) => {
+      const { time, desc } = bookmark;
+      const listElement = bookmark?.name
+        ? createBookmarkElement(index + 1, time, desc, bookmark.name)
+        : createBookmarkElement(index + 1, time, desc);
       bookmarkList.appendChild(listElement);
     });
   }
@@ -45,31 +49,57 @@ const jumpToTimestamp = time => {
   });
 };
 
+const updateChromeStorage = newBookmarks => {
+  console.log(newBookmarks);
+  chrome.storage.sync.set({
+    [videoId]: JSON.stringify([...newBookmarks].sort((a, b) => a.time - b.time)),
+  });
+};
+
 const removeBookmark = async time => {
-  const bookmarkList = document.querySelector('.bookmark_lists');
   const currentBookMarks = await getCurrentVideoBookmarks();
   const currentFilteredBookmarks = currentBookMarks.filter(
     bookmark => bookmark.time !== time
   );
 
-  chrome.storage.sync.set({
-    [videoId]: JSON.stringify(
-      [...currentFilteredBookmarks].sort((a, b) => a.time - b.time)
-    ),
+  updateChromeStorage(currentFilteredBookmarks);
+  refreshBookmark(currentFilteredBookmarks);
+};
+
+const editBookmark = async time => {
+  const currentBookmarks = await getCurrentVideoBookmarks();
+  const name = prompt('Enter the name for this bookmark');
+  alert('You entered this name for the bookmark ' + name);
+
+  const updatedBookmarks = currentBookmarks.map(bookmark => {
+    if (bookmark.time === time) {
+      return { ...bookmark, name: name };
+    }
+
+    return bookmark;
   });
 
-  if (currentFilteredBookmarks.length === 0) {
+  updateChromeStorage(updatedBookmarks);
+  refreshBookmark(updatedBookmarks);
+};
+
+const refreshBookmark = newBookmarks => {
+  const bookmarkList = document.querySelector('.bookmark_lists');
+  if (newBookmarks.length === 0) {
     bookmarkList.innerHTML = '<p>No bookmark exists for this video</p>';
   } else {
     bookmarkList.innerHTML = '';
-    currentFilteredBookmarks.forEach(({ time, desc }, index) => {
-      const listElement = createBookmarkElement(index + 1, time, desc);
+    newBookmarks.forEach((bookmark, index) => {
+      const { time, desc } = bookmark;
+      const listElement = bookmark?.name
+        ? createBookmarkElement(index + 1, time, desc, bookmark.name)
+        : createBookmarkElement(index + 1, time, desc);
       bookmarkList.appendChild(listElement);
     });
   }
 };
 
-const createBookmarkElement = (index, time, description) => {
+const createBookmarkElement = (index, time, description, name) => {
   // Create the wrapper div
   const wrapperDiv = document.createElement('div');
   wrapperDiv.className = 'bookmark_list-wrapper';
@@ -85,13 +115,40 @@ const createBookmarkElement = (index, time, description) => {
   leftDiv.appendChild(indexSpan);
 
   // Create and append the time paragraph
+  const bookmarkInformationWrapper = document.createElement('div');
+  bookmarkInformationWrapper.className = 'bookmark_information_wrapper';
+
+  const bookmarkInformation = document.createElement('div');
+  bookmarkInformation.className = 'bookmark_information';
+
+  const titleParagraph = document.createElement('p');
+  titleParagraph.textContent = name ? name : description;
+  titleParagraph.className = 'bookmark_title';
+  bookmarkInformation.appendChild(titleParagraph);
+
   const timeParagraph = document.createElement('p');
   timeParagraph.textContent = description;
-  leftDiv.appendChild(timeParagraph);
+  timeParagraph.className = 'bookmark_time';
+  bookmarkInformation.appendChild(timeParagraph);
+
+  bookmarkInformationWrapper.appendChild(bookmarkInformation);
+  leftDiv.appendChild(bookmarkInformationWrapper);
 
   // Create the right controls div
   const rightControlsDiv = document.createElement('div');
   rightControlsDiv.className = 'right-controls';
+
+  // edit button
+  const editButton = document.createElement('button');
+  editButton.addEventListener('click', () => {
+    editBookmark(time);
+  });
+  editButton.title = 'Edit this bookmark';
+  editButton.className = 'edit-btn';
+  const editIcon = document.createElement('img');
+  editIcon.src = chrome.runtime.getURL('/assets/play.png');
+  editButton.appendChild(editIcon);
+  rightControlsDiv.appendChild(editButton);
 
   // Create and append the jump button
   const jumpButton = document.createElement('button');
